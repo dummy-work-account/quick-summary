@@ -1,0 +1,73 @@
+#!/bin/bash
+
+function createif() {
+    local filepath="$1"
+    if [ -e "$filepath" ]; then
+        echo "$filepath already exists"
+    else
+        touch "$filepath"
+        echo "$filepath created"
+    fi
+}
+
+function promptstart() {
+    local filepath="$1"
+    echo '
+## Prompt
+
+```bash'>> "$filepath"
+}
+
+function promptend() {
+    local filepath="$1"
+    echo '```
+
+## Response
+' >> "$filepath"
+}
+
+filename="$(date +"%Y-%m-%d")-quick-summary-$(date +"%s").md"
+filedir="$HOME/repos/digital_journal/code_snippets/sgpt"
+filepath="$filedir/$filename"
+echo "$filepath"
+
+createif "$filepath"
+# prompt="create a summary of this web article and include a bullet list with any unique points. if there is nothing unique then don't include the list. include the title and author(s) of the article"
+prompt="create a two sentence summary of this web article and include a bullet list with any unique points (if exists). also include the title and author(s) of the article"
+version="v0.1.2"
+# Replace "file.txt" with the path to your file
+file="file.txt"
+echo "# Quick Summary Script $version
+
+- this script loops through a file containing an unstructured list of urls
+- leaverages gpt api to summarize the html \`<p>\` contents
+- prompt: \`$prompt\`
+- file: \`$file\`
+">> "$filepath"
+
+promptsuffix='| tee -a "$filepath"'
+
+
+
+filecontents="$(cat $file)"
+cat <<EOF >> "$filepath"
+file name: \`$file\`
+\`\`\`
+$filecontents
+\`\`\`
+EOF
+
+if [ -f "$file" ]; then
+    # Read each line in the file
+    while IFS= read -r line; do
+        echo "$line"
+        promptstart "$filepath"
+        echo "sgpt --no-cache \<curl contents\> $promptsuffix" >> "$filepath"
+        echo "url: $line" >> "$filepath"
+        promptend "$filepath"
+
+        curl "$line" | grep -o "<p>.*</p>" | sed 's/<[^>]*>//g' | sgpt --no-cache "$prompt" | tee -a "$filepath"
+    done < "$file"
+else
+    echo "File not found: $file"
+fi

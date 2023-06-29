@@ -1,0 +1,8 @@
+https://www.datadoghq.com/product/data-streams-monitoring/
+https://www.datadoghq.com/blog/data-streams-monitoring/
+https://www.datadoghq.com/blog/monitor-dataflow-pipelines-with-datadog/
+https://cloud.google.com/blog/products/data-analytics/building-streaming-data-pipelines
+https://cloud.google.com/blog/products/data-analytics/create-templates-from-any-dataflow-pipeline
+https://cloud.google.com/blog/products/data-analytics/dataflow-new-observability-capabilities
+https://cloud.google.com/blog/products/data-analytics/managing-and-monitoring-a-cloud-dataflow-setup/
+https://www.uber.com/blog/ubers-journey-toward-better-data-culture-from-first-principles/
